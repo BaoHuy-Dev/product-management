@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Hệ thống quản lý sản phẩm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .test-accounts {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .test-accounts h6 {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .test-accounts small {
+            color: #888;
+            line-height: 1.4;
+        }
+
+        h3, h5 {
+            margin: 0;
+        }
+
+        h5 {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="card">
+        <div class="card-header">
+            <h3>🏪 Hệ thống quản lý sản phẩm</h3>
+            <h5>Vui lòng đăng nhập để tiếp tục</h5>
+        </div>
+
+        <div class="card-body">
+            <!-- Hiển thị thông báo lỗi -->
+            <div th:if="${error}" class="alert">
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Form đăng nhập -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        👤 Tên đăng nhập:
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           name="username"
+                           placeholder="Nhập tên đăng nhập"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        🔒 Mật khẩu:
+                    </label>
+                    <input type="password"
+                           class="form-control"
+                           id="password"
+                           name="password"
+                           placeholder="Nhập mật khẩu"
+                           required>
+                </div>
+
+                <button type="submit" class="btn">
+                    🚀 Đăng nhập
+                </button>
+            </form>
+
+            <!-- Thông tin tài khoản test -->
+            <div class="test-accounts">
+                <h6>💡 Tài khoản để test:</h6>
+                <small>
+                    <strong>👨‍💼 Admin:</strong> admin / admin123<br>
+                    <strong>👨‍💻 Staff:</strong> staff / staff123<br>
+                    <strong>👤 Member:</strong> member / member123
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

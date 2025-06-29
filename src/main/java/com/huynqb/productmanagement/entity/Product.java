@@ -1,19 +1,18 @@
 package com.huynqb.productmanagement.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(100)")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(100)")
     private String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -25,13 +24,13 @@ public class Product {
     @Column(nullable = false)
     private LocalDate date;
 
-    @ManyToOne
+    // Quan hệ N-1 với Category (EAGER để tránh lazy loading issues)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-
-    public Product() {
-    }
+    // CONSTRUCTORS
+    public Product() {}
 
     public Product(String name, BigDecimal price, Integer quantity, LocalDate date, Category category) {
         this.name = name;
@@ -41,51 +40,35 @@ public class Product {
         this.category = category;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // GETTERS VÀ SETTERS
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+    public LocalDate getDate() { return date; }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    // toString để debug
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", date=" + date +
+                ", category=" + (category != null ? category.getName() : "null") +
+                '}';
     }
 }

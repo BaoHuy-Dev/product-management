@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product != null and product.id != null ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}">Form sản phẩm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #007bff;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .btn-primary { background: #007bff; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-outline-light { background: transparent; color: white; border: 1px solid white; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 30px;
+        }
+
+        .card-header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            margin: -30px -30px 30px -30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .text-danger {
+            color: #dc3545;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h4 {
+            margin: 0;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #6c757d;
+        }
+
+        .info-box ul {
+            margin: 10px 0 0 20px;
+        }
+
+        @media (max-width: 768px) {
+            .d-flex {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                🏪 Quản lý sản phẩm
+            </div>
+            <div>
+                    <span style="margin-right: 15px;">
+                        👤 Xin chào, <strong th:text="${user != null ? user.name : 'Admin'}">Admin</strong>
+                    </span>
+                <a class="btn btn-outline-light" th:href="@{/logout}">
+                    🚪 Đăng xuất
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a th:href="@{/products}">🏠 Danh sách sản phẩm</a>
+        <span> / </span>
+        <span th:text="${product != null and product.id != null ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}">Thêm sản phẩm mới</span>
+    </nav>
+
+    <!-- Form Card -->
+    <div class="card">
+        <div class="card-header">
+            <h4>
+                <span th:if="${product != null and product.id != null}">✏️ Sửa sản phẩm</span>
+                <span th:unless="${product != null and product.id != null}">➕ Thêm sản phẩm mới</span>
+            </h4>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/products/save}" th:object="${product}" method="post">
+
+            <!-- Hidden field cho ID -->
+            <input type="hidden" th:field="*{id}">
+
+            <!-- Tên sản phẩm -->
+            <div class="form-group">
+                <label for="name" class="form-label">
+                    📦 Tên sản phẩm: <span class="text-danger">*</span>
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="name"
+                       th:field="*{name}"
+                       placeholder="Nhập tên sản phẩm"
+                       required>
+            </div>
+
+            <!-- Giá -->
+            <div class="form-group">
+                <label for="price" class="form-label">
+                    💰 Giá: <span class="text-danger">*</span>
+                </label>
+                <input type="number"
+                       class="form-control"
+                       id="price"
+                       th:field="*{price}"
+                       placeholder="0.00"
+                       step="0.01"
+                       min="0"
+                       required>
+            </div>
+
+            <!-- Số lượng -->
+            <div class="form-group">
+                <label for="quantity" class="form-label">
+                    📊 Số lượng: <span class="text-danger">*</span>
+                </label>
+                <input type="number"
+                       class="form-control"
+                       id="quantity"
+                       th:field="*{quantity}"
+                       placeholder="0"
+                       min="0"
+                       required>
+            </div>
+
+            <!-- Ngày -->
+            <div class="form-group">
+                <label for="date" class="form-label">
+                    📅 Ngày: <span class="text-danger">*</span>
+                </label>
+                <input type="date"
+                       class="form-control"
+                       id="date"
+                       th:field="*{date}"
+                       required>
+            </div>
+
+            <!-- Danh mục -->
+            <div class="form-group">
+                <label for="category" class="form-label">
+                    🏷️ Danh mục: <span class="text-danger">*</span>
+                </label>
+                <select class="form-select"
+                        id="category"
+                        th:field="*{category.id}"
+                        required>
+                    <option value="">Chọn danh mục...</option>
+                    <option th:each="category : ${categories}"
+                            th:value="${category.id}"
+                            th:text="${category.name}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-between align-items-center">
+                <a th:href="@{/products}" class="btn btn-secondary">
+                    ← Quay lại danh sách
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    <span th:if="${product != null and product.id != null}">💾 Cập nhật</span>
+                    <span th:unless="${product != null and product.id != null}">💾 Lưu mới</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Thông tin bổ sung -->
+    <div class="info-box">
+        <h6>💡 Ghi chú:</h6>
+        <ul>
+            <li>Tất cả các trường có dấu <span class="text-danger">*</span> là bắt buộc</li>
+            <li>Giá sản phẩm phải là số dương</li>
+            <li>Số lượng phải là số nguyên không âm</li>
+            <li>Ngày không được để trống</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Set ngày hiện tại nếu là form tạo mới
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('date');
+        if (dateInput && !dateInput.value) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.value = today;
+        }
+    });
+</script>
+</body>
+</html>

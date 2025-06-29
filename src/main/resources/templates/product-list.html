@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách sản phẩm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: #007bff;
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-outline-light { background: transparent; color: white; border: 1px solid white; }
+
+        .btn:hover { opacity: 0.9; }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .form-control {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: #343a40;
+            color: white;
+            font-weight: bold;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background: #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background: #e9ecef;
+        }
+
+        .text-center { text-align: center; }
+        .text-end { text-align: right; }
+        .text-success { color: #28a745; }
+        .text-muted { color: #6c757d; }
+
+        .d-flex { display: flex; }
+        .justify-content-between { justify-content: space-between; }
+        .align-items-center { align-items: center; }
+
+        .mb-3 { margin-bottom: 15px; }
+        .me-2 { margin-right: 10px; }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .navbar-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="container">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                🏪 Quản lý sản phẩm
+            </div>
+            <div class="user-info">
+                    <span>
+                        👤 Xin chào, <strong th:text="${user != null ? user.name : 'Guest'}">Admin</strong>
+                        <span class="badge" th:text="${user != null ? user.roleName : 'Guest'}">Quản trị viên</span>
+                    </span>
+                <a class="btn btn-outline-light" th:href="@{/logout}">
+                    🚪 Đăng xuất
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Header với nút thêm -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>📦 Danh sách sản phẩm</h2>
+        <div th:if="${user != null and user.isAdmin()}">
+            <a th:href="@{/products/create}" class="btn btn-success">
+                ➕ Thêm sản phẩm mới
+            </a>
+        </div>
+    </div>
+
+    <!-- Form tìm kiếm -->
+    <div class="card">
+        <form th:action="@{/products}" method="get" class="search-form">
+            <input type="text"
+                   class="form-control"
+                   name="search"
+                   th:value="${search}"
+                   placeholder="🔍 Tìm kiếm theo tên sản phẩm...">
+            <button type="submit" class="btn btn-primary">
+                🔍 Tìm kiếm
+            </button>
+            <a th:href="@{/products}" class="btn btn-secondary">
+                🔄 Xóa bộ lọc
+            </a>
+        </form>
+    </div>
+
+    <!-- Bảng sản phẩm -->
+    <div class="card">
+        <!-- Hiển thị số lượng kết quả -->
+        <div class="mb-3">
+                <span class="text-muted">
+                    Tìm thấy <strong th:text="${products != null ? #lists.size(products) : 0}">0</strong> sản phẩm
+                    <span th:if="${search != null and search != ''}"
+                          th:text="'cho từ khóa: &quot;' + ${search} + '&quot;'"></span>
+                </span>
+        </div>
+
+        <!-- Bảng responsive -->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>🆔 ID</th>
+                    <th>📦 Tên sản phẩm</th>
+                    <th>💰 Giá</th>
+                    <th>📊 Số lượng</th>
+                    <th>📅 Ngày</th>
+                    <th>🏷️ Danh mục</th>
+                    <th th:if="${user != null and user.isAdmin()}">⚙️ Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Lặp qua danh sách sản phẩm -->
+                <tr th:each="product : ${products}" th:if="${products != null}">
+                    <td th:text="${product.id}">1</td>
+                    <td>
+                        <strong th:text="${product.name}">Tên sản phẩm</strong>
+                    </td>
+                    <td class="text-end">
+                                <span class="text-success"
+                                      th:text="${product.price != null ? (#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' VND') : '0 VND'}">
+                                    25,000 VND
+                                </span>
+                    </td>
+                    <td class="text-center">
+                        <span th:text="${product.quantity}">100</span>
+                    </td>
+                    <td th:text="${product.date != null ? #temporals.format(product.date, 'dd/MM/yyyy') : ''}">28/06/2025</td>
+                    <td>
+                        <span th:text="${product.category != null ? product.category.name : 'N/A'}">Danh mục</span>
+                    </td>
+
+                    <!-- Cột thao tác chỉ cho admin -->
+                    <td th:if="${user != null and user.isAdmin()}">
+                        <!-- Nút sửa -->
+                        <a th:href="@{/products/edit/{id}(id=${product.id})}"
+                           class="btn btn-warning me-2"
+                           title="Sửa sản phẩm">
+                            ✏️ Sửa
+                        </a>
+
+                        <!-- Nút xóa -->
+                        <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                           class="btn btn-danger"
+                           title="Xóa sản phẩm"
+                           onclick="return confirm('❌ Bạn có chắc chắn muốn xóa sản phẩm này không?')">
+                            🗑️ Xóa
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- Hiển thị khi không có dữ liệu -->
+                <tr th:if="${products == null or #lists.isEmpty(products)}">
+                    <td th:colspan="${user != null and user.isAdmin() ? '7' : '6'}"
+                        class="text-center empty-state">
+                        <div>
+                            📭
+                            <br><br>
+                            <span th:if="${search != null and search != ''}">
+                                        Không tìm thấy sản phẩm nào với từ khóa "<span th:text="${search}"></span>"
+                                    </span>
+                            <span th:unless="${search != null and search != ''}">
+                                        Chưa có sản phẩm nào trong hệ thống
+                                    </span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
